@@ -50,8 +50,6 @@ endif()
 # We only differentiate between MSVC and GCC-compatible compilers
 if(MSVC)
     set(LTM_C_FLAGS -W3)
-    string(REPLACE "/RTC1" ""    CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-    string(REPLACE "/Od"   "/O2" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 elseif(WATCOM)
     set(LTM_C_FLAGS -fo=.obj -oaxt -3r -w3)
 else()
@@ -69,6 +67,12 @@ if(CMAKE_C_COMPILER_ID MATCHES "(C|c?)lang")
     list(APPEND LTM_C_FLAGS -Wno-typedef-redefinition -Wno-tautological-compare -Wno-builtin-requires-header)
     # Clang requires at least '-O1' for dead code elimination
     set(CMAKE_C_FLAGS_DEBUG "-O1 ${CMAKE_C_FLAGS_DEBUG}")
+endif()
+if(MSVC)
+    # MSVC requires at least '-O1' for dead code elimination...
+    string(REPLACE "/Od" "/O1" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    # ...which doesn't work with runtime error checking
+    string(REPLACE "/RTC1" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 endif()
 if(CMAKE_C_COMPILER MATCHES "mingw")
     list(APPEND LTM_C_FLAGS -Wno-shadow -Wno-expansion-to-defined -Wno-declaration-after-statement -Wno-bad-function-cast)
