@@ -50,7 +50,7 @@ endif()
 # We only differentiate between MSVC and GCC-compatible compilers
 if(MSVC)
     set(LTM_C_FLAGS -W3)
-    set(CMAKE_C_FLAGS_DEBUG "/O2 ${CMAKE_C_FLAGS_DEBUG}")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /O2 /wd9025")
 elseif(WATCOM)
     set(LTM_C_FLAGS -fo=.obj -oaxt -3r -w3)
 else()
