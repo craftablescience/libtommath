@@ -68,6 +68,12 @@ if(CMAKE_C_COMPILER_ID MATCHES "(C|c?)lang")
     # Clang requires at least '-O1' for dead code elimination
     set(CMAKE_C_FLAGS_DEBUG "-O1 ${CMAKE_C_FLAGS_DEBUG}")
 endif()
+if(MSVC)
+    # MSVC requires at least '-O1' for dead code elimination...
+    string(REPLACE "/Od" "/O1" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+    # ...which doesn't work with runtime error checking
+    string(REPLACE "/RTC1" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+endif()
 if(CMAKE_C_COMPILER MATCHES "mingw")
     list(APPEND LTM_C_FLAGS -Wno-shadow -Wno-expansion-to-defined -Wno-declaration-after-statement -Wno-bad-function-cast)
 endif()
